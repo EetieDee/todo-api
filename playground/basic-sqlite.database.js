@@ -12,7 +12,7 @@ var Todo = sequelize.define('todo', {
 		type: Sequelize.STRING,
 		allowNull: false,
 		validate: {
-			len: [1, 250],  // > 1 en < 250 tekens
+			len: [1, 250], // > 1 en < 250 tekens
 		}
 	},
 	completed: {
@@ -24,10 +24,12 @@ var Todo = sequelize.define('todo', {
 
 // INSERT INTO 
 // let op force:true, anders pas created als niet bestaat
-sequelize.sync({force: true}).then(function() {
+sequelize.sync({
+	force: true
+}).then(function() {
 	console.log("everything is synced");
 
-	Todo.findById(1).then(function (todo) {
+	Todo.findById(1).then(function(todo) {
 		if (todo) {
 			console.log(todo.toJSON());
 		} else {
