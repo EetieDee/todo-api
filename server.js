@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var _ = require('underscore');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
@@ -31,6 +32,13 @@ app.get('/todos', function (req, res) {
 // GET /todos/:id
 app.get('/todos/:id', function (req, res) {
 	var todoId = req.params.id;
+	
+	var matchedTodo = _.findWhere(todos, {id: todoId});
+	res.json (matchedTodo);
+
+	/*
+	// bovenstaande regels zorgen dat onderstaande
+	// regels overbodig zijn
 
 	todos.forEach(function (todo) {
 		console.log(todo);
@@ -42,18 +50,26 @@ app.get('/todos/:id', function (req, res) {
 			console.log(todos[key]);
 		}
 	}
+	*/
 });
 
 // POST /todos
 app.post('/todos', function (req, res) {
-	var body = req.body;
+	var body = _.pick(req.body, 'description', 'completed');
+
+
+	if (!_.isBoolean(body.completed) || !_.isString(body.description.trim())) {
+		return res.status(400).send();
+	}
+
+	body.description = body.description.trim();
 
 	// add id field
 	body.id = todoNextId++;
 
 	// push body into array
 	todos.push(body);
-	
+
 	res.json(body);
 });
 
