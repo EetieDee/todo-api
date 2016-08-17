@@ -29,11 +29,18 @@ app.get('/todos', function (req, res) {
 	var queryParams = req.query; // ?completed=true
 	var filteredTodos = todos;
 
+	// ?completed=true
 	if (queryParams.hasOwnProperty("completed")) {
 		filteredTodos = _.where(filteredTodos, { completed: true });
 	}
-	// if has property && compled === 'true'
-	// filteredTodos = _.where(filteredTodos, { compled});
+
+	// &q=Dog
+	if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
+		filteredTodos = _.filter(filteredTodos, function (todo) {
+			return todo.indexOf(queryParams.q) > -1;
+		});
+	}
+
 
 	res.json(filteredTodos);
 });
