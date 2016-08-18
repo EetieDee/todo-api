@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var db = require('./db.js');		// load sequalize , db model
 
 var app = express();
 var PORT = process.env.PORT || 3000;
@@ -73,7 +74,16 @@ app.get('/todos/:id', function (req, res) {
 app.post('/todos', function (req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
 
+	// db is overall functie voor db nu. 
+	// 'body' is paar regels boven
+	db.todo.create(body).then(function (todo) {
+		res.json(todo.toJSON());
+	}, function (e) {
+		res.status(404).json(e);
+	});
 
+
+	/*
 	if (!_.isBoolean(body.completed) || !_.isString(body.description.trim())) {
 		return res.status(400).send();
 	}
@@ -87,6 +97,7 @@ app.post('/todos', function (req, res) {
 	todos.push(body);
 
 	res.json(body);
+	*/
 });
 
 // DELETE /todos/:id
@@ -144,7 +155,14 @@ app.put('/todos/:id', function (req, res) {
 
 });
 
+db.sequelize.sync().then(function () {
+	app.listen(PORT, function() {
+		console.log('Listening on port '+PORT);
+	});
+}); 
 
+/*
 app.listen(PORT, function () {
 	console.log('Express listening on PORT ' + PORT);
 });
+*/
