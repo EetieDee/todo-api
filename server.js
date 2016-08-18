@@ -49,9 +49,22 @@ app.get('/todos', function (req, res) {
 // GET /todos/:id
 app.get('/todos/:id', function (req, res) {
 	var todoId = req.params.id;
+
+	// sequelize version
+	db.todo.findById(todoId).then(function (todo) {
+		if (!!todo) {
+			res.json(todo.toJSON());	
+		} else {
+			res.status(404).send();
+		}
+		
+	}, function (e) {
+		res.status(500).json(e);
+	});
 	
-	var matchedTodo = _.findWhere(todos, {id: todoId});
-	res.json (matchedTodo);
+	// underscore findWhere version
+	//var matchedTodo = _.findWhere(todos, {id: todoId});
+	//res.json (matchedTodo);
 
 	/*
 	// bovenstaande regels zorgen dat onderstaande
