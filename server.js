@@ -151,6 +151,18 @@ app.delete('/todos/:id', function (req, res) {
 	var todoId = parseInt(req.params.id);
 	var matchedTodo = _.findWhere(todos, {id: todoId});
 
+	db.todo.destroy({ where : {id : todoId}, truncate: true}).then(function (rowsDeleted) {
+		if (rowsDeleted === 0) {
+			res.status(404).send();
+		} else {
+			res.status(204).send(); // OK, nothing to send back
+		}
+	}, function (e) {
+		res.status(500).json(e);
+	});
+
+	/*
+
 	if (!matchedTodo) {
 		res.status(404).send();
 	} else {
@@ -159,6 +171,7 @@ app.delete('/todos/:id', function (req, res) {
 	
 		res.json(todos);	
 	}
+	*/
 	
 });
 
