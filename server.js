@@ -146,6 +146,20 @@ app.post('/todos', function (req, res) {
 	*/
 });
 
+// add new user
+app.post('/users', function (req, res) {
+	var body = _.pick(req.body, 'email', 'password');
+
+	console.log(body);
+
+	db.user.create(body).then(function (user) {
+		res.json(user.toJSON());
+	}, function (e) {
+		res.status(404).json(e);
+	});
+
+});
+
 // DELETE /todos/:id
 app.delete('/todos/:id', function (req, res) {
 	var todoId = parseInt(req.params.id);
